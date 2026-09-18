@@ -1,30 +1,3 @@
-# VayuDrishti, whole project: MongoDB, the FastAPI backend with the three trained models, and one site
-# container that serves the website, the model test bench and the metrics dashboard on a single port.
-#
-#   docker compose up -d --build
-#   http://localhost:3001            website        (/bench and /evaluation on the same port)
-#   http://localhost:8001/docs       backend API docs
-#
-# Build argument: the backend imports emergentintegrations, which is served from Emergent's own package
-# index rather than PyPI. Put the index URL in a .env file next to this file (git-ignored):
-#
-#   EMERGENT_INDEX_URL=<emergent package index>
-#   EMERGENT_LLM_KEY=<key>            # only needed for the analyst chat
-#
-# First run: the mongo service starts empty, so the cyclone registry has no storms until the data is loaded.
-# To copy the database from this machine into it:
-#
-#   mongodump --uri mongodb://127.0.0.1:27017 --db cyclone_database --archive=cyclone.archive
-#   docker compose cp cyclone.archive mongo:/tmp/cyclone.archive
-#   docker compose exec mongo mongorestore --archive=/tmp/cyclone.archive
-#
-# To use this machine's MongoDB instead of the container, put this in the same .env file:
-#
-#   MONGODB_URI=mongodb://host.docker.internal:27017
-#
-# The training workspaces (identification_model/, prediction_model/) are offline tools and are not part of
-# this file; the trained checkpoints they produce are already inside the backend image.
-
 name: vayudrishti
 
 services:
@@ -47,8 +20,6 @@ services:
   backend:
     build:
       context: ./backend
-      args:
-        EMERGENT_INDEX_URL: ${EMERGENT_INDEX_URL:-}
     restart: unless-stopped
     networks: [vayudrishti]
     environment:
